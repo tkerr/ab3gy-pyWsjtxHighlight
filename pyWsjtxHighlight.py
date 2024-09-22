@@ -255,7 +255,11 @@ def highlight_level(call, index, db):
                     # Log entry was less than num_days ago.
                     if (level == 0): 
                         level = 1
-                        if verbose: print('{} logged {} day(s) ago'.format(call, delta))
+                        if verbose: 
+                            if (delta == 1):
+                                print('{} logged 1 day ago'.format(call))
+                            else:
+                                print('{} logged {} days ago'.format(call, delta))
                         
             elif (year_now - year_qso == 1):
                 # Special case of year rollover.
@@ -265,7 +269,11 @@ def highlight_level(call, index, db):
                     # Log entry was less than num_days ago.
                     if (level == 0): 
                         level = 1
-                        if verbose: print('{} logged {} day(s) ago'.format(call, delta))
+                        if verbose: 
+                            if (delta == 1):
+                                print('{} logged 1 day ago'.format(call))
+                            else:
+                                print('{} logged {} days ago'.format(call, delta))
         index += 1
         db_entry = db[index].strip().split(',')
     return level
@@ -310,6 +318,7 @@ if __name__ == "__main__":
     udp_port = 2237
     timeout  = 16
     build_database_flag = 0 # 0 = don't build, 1 = build if older, 2 = always build
+    logged_count = 0
     
     wsjtx_adif_file = os.path.join(localappdata, 'WSJT-X', 'wsjtx_log.adi')
     app_database_file = os.path.join(scriptdir, 'logdata.csv')
@@ -434,6 +443,8 @@ if __name__ == "__main__":
                 db.sort()
                 with open(app_database_file, 'w') as dbf:
                     dbf.writelines(db)
+                logged_count += 1
+                print('Logged count: {}'.format(logged_count))
                 
         except KeyboardInterrupt:
             ok = False
